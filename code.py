@@ -1,76 +1,93 @@
-# basic class for any object
-'''
-class objects():
+import pygame
+from classes import *
 
-	x=0
-	y=0
-	h=0 
-	w=0
+pygame.init()
 
-	img = 'abcd.png'
-	can_collide = True
+#global variables
+display_width = 800
+display_height = 600
+player1 = player()
 
-	def draw(x,y):
+#color variables
+black = (0,0,0)
+white = (255,255,255)
 
+# main pygame variables
+gameDisplay = pygame.display.set_mode((display_width,display_height))
+clock = pygame.time.Clock()
 
-	def collide(py,py):
-            
-
-
-	def any_special_func():
-
-'''
-class player():
-
-	x=0
-	y=0
-	h=0
-	w=0
-
-	img = 'player.png'
-    powerup = False
-
-    health = 100
-    armour = 0
-    speed = 0
-
-	def move(btn_pressed):
-
-#	def shoot(mx,my):
-
-#	def interact(obj):
-
-#	def message(str):
-
-#	def special():
-
-#	def check_powerup():
-'''
 
 def menu():
-
+    pass
 
 def gameinit():
-'''
+    #initialise player
+    player1.x = 0.0
+    player1.y = 0.0
+    player1.health = 100
+    player1.speed = 0.0
+    #etc
+            
 
 def gameloop():
+   
+    quit = False
+    while quit == False:
 
-	#events
+   	    #events
+        for event in pygame.event.get():
+        
+            # event - quit
+            if event.type == pygame.QUIT:
+                quit = True
+
+            #this event runs when any key is pressed
+            if event.type == pygame.KEYDOWN:
+
+                #these if statements check for which key is being pressed
+                if event.key == pygame.K_LEFT:
+                    player1.move('left')
+                elif event.key == pygame.K_RIGHT:
+                    player1.move('right')
+                elif event.key == pygame.K_UP:
+                    player1.move('up')
+                elif event.key == pygame.K_DOWN:
+                    player1.move('down')
+ 
+
+            #used for debugging
+            print event
+
+
+        #logic
+        player1.inertia()
+        
+
+	    #map draw
+        gameDisplay.fill(white)
+        draw(player1)
+        pygame.display.update()
+        clock.tick(60)
 
 
 
-	#logic
 
 
-
-	#map draw
-
-
-'''
 def gameexit():
+    #runs before closing the window
+    pygame.quit()
+    quit()
 
 
+def draw(obj):
+    #used to draw any object sent to it on the screen
+    gameDisplay.blit(obj.image, (obj.x,obj  .y))
 
+
+# main code
+gameinit()
+gameloop()
+gameexit()
 
 
 

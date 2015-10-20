@@ -1,19 +1,58 @@
+import pygame
+pygame.init()
+
+brakespeed = 0.05
+
 class player():
 
-    x = 0.0
-    y = 0.0
-    h = 0.0
-    w = 0.0
-    speed = 0.0
-    health = 100.0
-    armour = 0.0
+    def __init__(self):
+        #initialize all variables
 
-    powerup1 = False
-    powerup2 = False
-    powerup3 = False
+        self.x = 0.0
+        self.y = 0.0
+        self.h = 20
+        self.w = 20
+        self.speedx = 0.0
+        self.speedy = 0.0
+        self.health = 100.0
+        self.armour = 0.0
 
-    def move():
-        pass
+        self.powerup1 = False
+        self.powerup2 = False
+        self.powerup3 = False
+
+        self.image = pygame.image.load('player.png')
+        self.image = pygame.transform.scale(self.image, (self.w, self.h))
+
+    def move(self,direction):
+        #set initial speed according to direction
+
+        if direction == 'up':
+            self.speedy = -5
+        elif direction == 'down':
+            self.speedy = 5
+        elif direction == 'left':
+            self.speedx = -5
+        elif direction == 'right':
+            self.speedx = 5      
+
+    def inertia(self):
+        #constantly reduce speed till it is zero for smooth motion
+        #brakespeed is low to see the slowing effect
+
+        if self.speedx > 0:
+            self.speedx = (self.speedx*1000 - brakespeed*1000)/1000
+        elif self.speedx < 0:
+            self.speedx = (self.speedx*1000 + brakespeed*1000)/1000
+
+        if self.speedy > 0:
+            self.speedy = (self.speedy*1000 - brakespeed*1000)/1000
+        elif self.speedy < 0:
+            self.speedy = (self.speedy*1000 + brakespeed*1000)/1000
+
+        #always adds speed to x and y coords
+        self.x += self.speedx
+        self.y += self.speedy
 
     def shoot():
         pass
