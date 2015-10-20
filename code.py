@@ -1,5 +1,6 @@
 # basic class for any object
-class object():
+'''
+class objects():
 
 	x=0
 	y=0
@@ -13,28 +14,62 @@ class object():
 
 
 	def collide(py,py):
+            
 
 
 	def any_special_func():
 
-
-class wall():
+'''
+class player():
 
 	x=0
 	y=0
 	h=0
 	w=0
 
-	img = 'abcd.png'
-	can_collide = True
+	img = 'player.png'
+    powerup = False
 
-	def draw(x,y):
+    health = 100
+    armour = 0
+    speed = 0
+
+	def move(btn_pressed):
+
+#	def shoot(mx,my):
+
+#	def interact(obj):
+
+#	def message(str):
+
+#	def special():
+
+#	def check_powerup():
+'''
+
+def menu():
 
 
-	def collide(py,py):
+def gameinit():
+'''
+
+def gameloop():
+
+	#events
 
 
-	def any_special_func():
+
+	#logic
+
+
+
+	#map draw
+
+
+'''
+def gameexit():
+
+
 
 
 
