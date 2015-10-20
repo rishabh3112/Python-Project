@@ -80,7 +80,7 @@ def gameexit():
 
 def draw(obj):
     #used to draw any object sent to it on the screen
-    gameDisplay.blit(obj.image, (obj.x,obj  .y))
+    gameDisplay.blit(obj.image, (obj.x,obj.y))
 
 
 # main code
