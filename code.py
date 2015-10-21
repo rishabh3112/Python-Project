@@ -4,8 +4,8 @@ from classes import *
 pygame.init()
 
 #global variables
-display_width = 800
-display_height = 600
+display_width = 1366
+display_height = 768
 player1 = player()
 
 #color variables
@@ -14,6 +14,7 @@ white = (255,255,255)
 
 # main pygame variables
 gameDisplay = pygame.display.set_mode((display_width,display_height))
+#pygame.display.toggle_fullscreen()
 clock = pygame.time.Clock()
 
 
@@ -40,6 +41,18 @@ def gameloop():
             # event - quit
             if event.type == pygame.QUIT:
                 quit = True
+            if event.type == pygame.KEYDOWN:
+
+                #close game if backspace is pressed
+                #(made this shortcut as game cannot be closed in full screen)
+                if event.key == pygame.K_BACKSPACE:
+                    quit = True
+                #toggles fulscreen mode when pressing esc
+                if event.key == pygame.K_ESCAPE:
+                    pygame.display.toggle_fullscreen()
+
+            #used for debugging
+            print event
 
         #this event runs when any key is pressed
         pressed_keys = pygame.key.get_pressed()
@@ -51,11 +64,7 @@ def gameloop():
             player1.move('up')
         if pressed_keys[pygame.K_DOWN] == True:
             player1.move('down')
-                
- 
-
-            #used for debugging
-            print event
+              
 
 
         #logic

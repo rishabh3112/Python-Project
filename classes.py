@@ -1,7 +1,7 @@
 import pygame
 pygame.init()
 
-brakespeed = 0.05
+brakespeed = 0.5
 
 class player():
 
@@ -10,8 +10,8 @@ class player():
 
         self.x = 0.0
         self.y = 0.0
-        self.h = 20
-        self.w = 20
+        self.h = 30
+        self.w = 30
         self.speedx = 0.0
         self.speedy = 0.0
         self.health = 100.0
@@ -21,7 +21,7 @@ class player():
         self.powerup2 = False
         self.powerup3 = False
 
-        self.image = pygame.image.load('player.png')
+        self.image = pygame.image.load('images/player.png')
         self.image = pygame.transform.scale(self.image, (self.w, self.h))
 
     def move(self,direction):
@@ -60,3 +60,19 @@ class player():
     def interact():
         pass
     
+
+class wall():
+
+    def __init__():
+        #initialize all variables
+
+        self.x = 0.0
+        self.y = 0.0
+        self.h = 30
+        self.w = 30
+
+        can_collide = True
+
+        self.image = pygame.image.load('images/wall.png')
+        self.image = pygame.transform.scale(self.image, (self.w, self.h))
+        
