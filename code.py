@@ -7,6 +7,7 @@ pygame.init()
 display_width = 1366
 display_height = 768
 player1 = player()
+wall1 = wall()
 
 #color variables
 black = (0,0,0)
@@ -28,6 +29,8 @@ def gameinit():
     player1.health = 100
     player1.speed = 0.0
     #etc
+    wall1.x = 200
+    wall1.y = 300
             
 
 def gameloop():
@@ -52,7 +55,7 @@ def gameloop():
                     pygame.display.toggle_fullscreen()
 
             #used for debugging
-            print event
+            #print event
 
         #this event runs when any key is pressed
         pressed_keys = pygame.key.get_pressed()
@@ -68,12 +71,21 @@ def gameloop():
 
 
         #logic
-        player1.inertia()
-        
+        if collide(player1,wall1) == False:
+            player1.inertia()
+        else:
+            player1.speedx *= -0.1 
+            player1.speedy *= -0.1
+            player1.inertia()
+            player1.speedx = 0
+            player1.speedy = 0
+            
+        print collide(player1,wall1)
 
 	    #map draw
         gameDisplay.fill(white)
         draw(player1)
+        draw(wall1)
         pygame.display.update()
         clock.tick(60)
 
@@ -90,6 +102,25 @@ def gameexit():
 def draw(obj):
     #used to draw any object sent to it on the screen
     gameDisplay.blit(obj.image, (obj.x,obj.y))
+
+def collide(plyr,obj):
+
+    if obj.can_collide == False :
+        return False
+    elif ( ((plyr.x + plyr.speedx) >= obj.x) and ((plyr.x + plyr.speedx) <= (obj.x + obj.w)) ) and \
+         ( ((plyr.y + plyr.speedy) >= obj.y) and ((plyr.y + plyr.speedy) <= (obj.y + obj.h)) ):
+        return True
+    elif ( ((plyr.x + plyr.w + plyr.speedx) >= obj.x) and ((plyr.x + plyr.w + plyr.speedx) <= (obj.x + obj.w)) ) and \
+         ( ((plyr.y + plyr.speedy) >= obj.y) and ((plyr.y + plyr.speedy) <= (obj.y + obj.h)) ):
+        return True
+    elif ( ((plyr.x + plyr.speedx) >= obj.x) and ((plyr.x + plyr.speedx) <= (obj.x + obj.w)) ) and \
+         ( ((plyr.y + plyr.h + plyr.speedy) >= obj.y) and ((plyr.y + plyr.h + plyr.speedy) <= (obj.y + obj.h)) ):
+        return True
+    elif ( ((plyr.x + plyr.w + plyr.speedx) >= obj.x) and ((plyr.x + plyr.w + plyr.speedx) <= (obj.x + obj.w)) ) and \
+         ( ((plyr.y + plyr.h + plyr.speedy) >= obj.y) and ((plyr.y + plyr.h + plyr.speedy) <= (obj.y + obj.h)) ):
+        return True
+    else:
+        return False
 
 
 # main code

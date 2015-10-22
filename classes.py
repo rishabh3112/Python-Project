@@ -10,8 +10,8 @@ class player():
 
         self.x = 0.0
         self.y = 0.0
-        self.h = 30
-        self.w = 30
+        self.h = 25
+        self.w = 25
         self.speedx = 0.0
         self.speedy = 0.0
         self.health = 100.0
@@ -63,7 +63,7 @@ class player():
 
 class wall():
 
-    def __init__():
+    def __init__(self):
         #initialize all variables
 
         self.x = 0.0
@@ -71,7 +71,7 @@ class wall():
         self.h = 30
         self.w = 30
 
-        can_collide = True
+        self.can_collide = True
 
         self.image = pygame.image.load('images/wall.png')
         self.image = pygame.transform.scale(self.image, (self.w, self.h))
