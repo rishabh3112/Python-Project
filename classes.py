@@ -1,7 +1,9 @@
 import pygame
 pygame.init()
 
+#temporary values, to be changed later
 brakespeed = 0.5
+maxspeed = 5
 
 class player():
 
@@ -28,13 +30,13 @@ class player():
         #set initial speed according to direction
 
         if direction == 'up':
-            self.speedy = -5
+            self.speedy = -maxspeed
         elif direction == 'down':
-            self.speedy = 5
+            self.speedy = maxspeed
         elif direction == 'left':
-            self.speedx = -5
+            self.speedx = -maxspeed
         elif direction == 'right':
-            self.speedx = 5      
+            self.speedx = maxspeed     
 
     def inertia(self):
         #constantly reduce speed till it is zero for smooth motion
