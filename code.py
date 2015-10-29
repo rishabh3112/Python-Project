@@ -56,6 +56,8 @@ def gameloop():
 
     while quit == False:
 
+
+        is_O_pressed = False
    	    #events---------------------------------------------------------------------------------------------------
         for event in pygame.event.get():
         
@@ -72,7 +74,8 @@ def gameloop():
                 if event.key == pygame.K_ESCAPE:
                     pygame.display.toggle_fullscreen()
                 if event.key == pygame.K_o:
-                    g = True
+                    is_O_pressed = True
+                    
                     
 
             #used for debugging
@@ -100,15 +103,10 @@ def gameloop():
             #check collision with every object on the map
             if collide(player1,obj,mapx,mapy) == True:
                 is_collided = True
-                if type(obj).__name__ == 'door':
-                
-                    if g == True:
-                        is_collided = False
+                if obj.name == 'door':
+                    if is_O_pressed == True:
                         obj.can_collide = False
-                        break
-                
-            
-            
+                        is_O_pressed = False
                 break
         
             
