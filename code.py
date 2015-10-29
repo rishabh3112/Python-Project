@@ -7,6 +7,7 @@ pygame.init()
 display_width = 1366
 display_height = 768
 player1 = player()
+
 objects = [] 
 
 #map variables
@@ -70,6 +71,9 @@ def gameloop():
                 #toggles fulscreen mode when pressing esc
                 if event.key == pygame.K_ESCAPE:
                     pygame.display.toggle_fullscreen()
+                if event.key == pygame.K_o:
+                    g = True
+                    
 
             #used for debugging
             #print event
@@ -84,6 +88,8 @@ def gameloop():
             player1.move('up')
         if pressed_keys[pygame.K_DOWN] == True:
             player1.move('down')
+        
+        
               
 
 
@@ -94,8 +100,18 @@ def gameloop():
             #check collision with every object on the map
             if collide(player1,obj,mapx,mapy) == True:
                 is_collided = True
+                if type(obj).__name__ == 'door':
+                
+                    if g == True:
+                        is_collided = False
+                        obj.can_collide = False
+                        break
+                
+            
+            
                 break
-
+        
+            
         
         if is_collided == False:
             #player is not touching anything
@@ -196,6 +212,7 @@ def gameloop():
         else:
             #player is touching something
             
+            
             if player1.speedx != 0:
                 #player moving in x axis
 
@@ -204,7 +221,7 @@ def gameloop():
                     player1.speedx *= -0.1 
                     mapspeedx = 0
                 else:
-                    #player is outside red box
+                    #player is on red box
 
                     if ((-1*mapx) + display_width < map_edge_x) or (mapx <0):
                         #map is not scrolled all the way
@@ -346,12 +363,17 @@ def load_map(name):
         wl.y = wy + a
         a += wl.h
         objects.append(wl)
-
+    door1 = door()
+    door1.x = 110
+    door1.y = 240
+    objects.append(door1)
+    
 
 def draw_map(x,y):
     for obj in objects:
         draw(obj,x,y)
     draw(player1,0,0)
+    
 
 def inertia_map():
     #same as player inertia
