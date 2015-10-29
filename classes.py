@@ -77,4 +77,20 @@ class wall():
 
         self.image = pygame.image.load('images/wall.png')
         self.image = pygame.transform.scale(self.image, (self.w, self.h))
+
+
+class door():
+
+    def __init__(self):
+        #initialize all variables
+
+        self.x = 0.0
+        self.y = 0.0
+        self.h = 60
+        self.w = 60
+
+        self.can_collide = True
+
+        self.image = pygame.image.load('images/door.png')
+        self.image = pygame.transform.scale(self.image, (self.w, self.h))
         
