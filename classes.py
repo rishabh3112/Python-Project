@@ -68,6 +68,8 @@ class wall():
     def __init__(self):
         #initialize all variables
 
+        self.name = 'wall'
+
         self.x = 0.0
         self.y = 0.0
         self.h = 30
@@ -83,6 +85,8 @@ class door():
 
     def __init__(self):
         #initialize all variables
+
+        self.name = 'door'
 
         self.x = 0.0
         self.y = 0.0
