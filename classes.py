@@ -104,8 +104,8 @@ class gamemap():
     def __init__(self,dw,dh):
         #initialize all variables
 
-        self.mapx = 0.0
-        self.mapy = 0.0
+        self.mapx = 0.1
+        self.mapy = 0.1
         self.mapspeedx = 0
         self.mapspeedy = 0
 
