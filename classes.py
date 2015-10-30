@@ -65,13 +65,13 @@ class player():
 
 class wall():
 
-    def __init__(self):
+    def __init__(self,x,y):
         #initialize all variables
 
         self.name = 'wall'
 
-        self.x = 0.0
-        self.y = 0.0
+        self.x = x
+        self.y = y
         self.h = 30
         self.w = 30
 
@@ -83,15 +83,15 @@ class wall():
 
 class door():
 
-    def __init__(self):
+    def __init__(self,x,y):
         #initialize all variables
 
         self.name = 'door'
 
-        self.x = 0.0
-        self.y = 0.0
-        self.h = 60
-        self.w = 60
+        self.x = x
+        self.y = y
+        self.h = 30
+        self.w = 30
 
         self.can_collide = True
 

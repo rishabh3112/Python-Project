@@ -23,15 +23,7 @@ def menu():
     pass
 
 def gameinit():
-    #initialise player
-    player1.x = 250.0
-    player1.y = 250.0
-    player1.health = 100
-    player1.speed = 0.0
-    #etc
-
-    
-    load_map('temp_name')           
+    load_map('level1')           
 
 def gameloop():
    
@@ -288,54 +280,40 @@ def collide(plyr,obj,mapx,mapy):
         return False
 
 def load_map(name):
-    #temporary values
-    #these values will be loaded from a text file later
+    path = 'maps/' + name + '.txt'
+    filein = open(path,'r')
 
-    wx = 200
-    wy = 200
-    a = 0
-    for i in range(1,61):
-        wl = wall()
-        wl.x = wx + a
-        wl.y = wy
-        a += wl.w
-        objects.append(wl)
+    line = filein.readline()
+    a = line.split()
+    player1.x = float(a[0])
+    player1.y = float(a[1])
+    map1.map_edge_x = int(a[2])
+    map1.map_edge_y = int(a[3])
+    l = int(a[4])
 
-    wx = 100
-    wy = 1200
-    a = 0
-    for i in range(1,61):
-        wl = wall()
-        wl.x = wx + a
-        wl.y = wy
-        a += wl.w
-        objects.append(wl)
+    w = 0.0
+    h = 0.0
 
-    wx = 150
-    wy = 300
-    a = 0
-    for i in range(1,61):
-        wl = wall()
-        wl.x = wx 
-        wl.y = wy + a
-        a += wl.h
-        objects.append(wl)
+    for i in range(1,l+1):
 
-    wx = 1250
-    wy = 300
-    a = 0
-    for i in range(1,61):
-        wl = wall()
-        wl.x = wx 
-        wl.y = wy + a
-        a += wl.h
-        objects.append(wl)
-    door1 = door()
-    door1.x = 110
-    door1.y = 240
-    objects.append(door1)
-    
+        line = filein.readline()
+        #print line
+        for o in line:
 
+            if o == 'W':
+                wl = wall(w,h)
+                objects.append(wl)
+            elif o == 'D':
+                dr = door(w,h)
+                objects.append(dr)
+            
+            w += 30
+
+        h += 30
+        w = 0.0
+
+    filein.close()
+  
 def draw_map(x,y):
     for obj in objects:
         draw(obj,x,y)
