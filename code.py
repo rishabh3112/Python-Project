@@ -13,14 +13,38 @@ objects = []
 #color variables
 black = (0,0,0)
 white = (255,255,255)
+blue=(0,0,255)
 
 # main pygame variables
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 #pygame.display.toggle_fullscreen()
 clock = pygame.time.Clock()
+font = pygame.font.SysFont(None,50)
 
 def menu():
     pass
+
+def message(msg,color,mesx,mesy):
+    
+    screen = font.render(msg,True,color)
+    gameDisplay.blit(screen,[mesx,mesy])
+def gameintro():
+    start = True
+    while start:
+         for event in pygame.event.get():
+             if event.type == pygame.QUIT:
+                 gameexit()
+             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_s:
+                    start = False
+                 
+         gameDisplay.fill(black)
+         message('WELCOME TO THE BEST GAME EVER',blue,300,500)
+         message('PRESS s TO START THE GAME',white,400,700)
+            
+           
+         pygame.display.update()
+         clock.tick(60)
 
 def gameinit():
     load_map('level1')           
@@ -320,9 +344,7 @@ def draw_map(x,y):
     draw(player1,0,0)
     
 # main code
+gameintro()#intro loop run firstly
 gameinit()
 gameloop()
 gameexit()
-
-
-
