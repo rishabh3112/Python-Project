@@ -7,53 +7,50 @@ pygame.init()
 display_width = 1366
 display_height = 768
 player1 = player()
-
+map1 = gamemap(display_width,display_height)
 objects = [] 
-
-#map variables
-mapx = 0.0
-mapy = 0.0
-mapspeedx = 4
-mapspeedy = 0
-redx1 = 100
-redy1 = 100
-redx2 = display_width - 100
-redy2 = display_height - 100
-map_edge_x = 2200
-map_edge_y = 2200
 
 #color variables
 black = (0,0,0)
 white = (255,255,255)
+blue=(0,0,255)
 
 # main pygame variables
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 #pygame.display.toggle_fullscreen()
 clock = pygame.time.Clock()
-
+font = pygame.font.SysFont(None,50)
 def menu():
     pass
-
-def gameinit():
-    #initialise player
-    player1.x = 250.0
-    player1.y = 250.0
-    player1.health = 100
-    player1.speed = 0.0
-    #etc
-
+#
+def message(msg,color,mesx,mesy):
     
-    load_map('temp_name')           
+    screen = font.render(msg,True,color)
+    gameDisplay.blit(screen,[mesx,mesy])
+def gameintro():
+    start = True
+    while start:
+         for event in pygame.event.get():
+             if event.type == pygame.QUIT:
+                 gameexit()
+             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_s:
+                    start = False
+                 
+         gameDisplay.fill(black)
+         message('WELCOME TO THE BEST GAME EVER',blue,300,500)
+         message('PRESS s TO START THE GAME',white,400,700)
+            
+           
+         pygame.display.update()
+         clock.tick(60)
+def gameinit():
+    load_map('level1')           
 
 def gameloop():
    
     quit = False
     
-    #global keyword required to CHANGE the global variable's value
-    #not required to READ the variable's value
-    global mapspeedx
-    global mapspeedy
-
     while quit == False:
 
 
@@ -101,16 +98,13 @@ def gameloop():
         is_collided = False
         for obj in objects:
             #check collision with every object on the map
-            if collide(player1,obj,mapx,mapy) == True:
+            if collide(player1,obj,map1.mapx,map1.mapy) == True:
                 is_collided = True
                 if obj.name == 'door':
                     if is_O_pressed == True:
                         obj.can_collide = False
                         is_O_pressed = False
-                        
-                    else:
-                        obj.can_collide = True
-                
+                break
         
             
         
@@ -120,93 +114,93 @@ def gameloop():
             if player1.speedx > 0:
                 #player moving towards right
 
-                if player1.x <= redx2 :
+                if player1.x < map1.redx2 :
                     #player is inside red box
-                    mapspeedx = 0
+                    map1.mapspeedx = 0
                 else:
                     #player is outside red box
 
-                    if (-1*mapx) + display_width < map_edge_x:
+                    if (-1*map1.mapx) + display_width < map1.map_edge_x:
                         #some portion of map is hidden to the right of the screen
                     
-                        mapspeedx = -1*player1.speedx 
+                        map1.mapspeedx = -1*player1.speedx 
                         player1.speedx = 0
                         #move map to left instead of moving player to right and stop the player
 
-                    elif (-1*mapx) + display_width == map_edge_x:
+                    elif (-1*map1.mapx) + display_width == map1.map_edge_x:
                         #no portion of map left on the right of the screen
 
-                        player1.speedx = -1*mapspeedx
-                        mapspeedx = 0
+                        player1.speedx = -1*map1.mapspeedx
+                        map1.mapspeedx = 0
                         #set player speed to reverse of map speed and stop map from moving
 
             if player1.speedx < 0:
                 #player moving towards left
-
-                if player1.x >= redx1 :
+               
+                if player1.x > map1.redx1 :
                     #player is inside red box
-                    mapspeedx = 0
+                    map1.mapspeedx = 0
                 else:
                     #player is outside red box
 
-                    if mapx < 0:
+                    if map1.mapx < 0:
                         #some portion of map is hidden to the left of the screen
                     
-                        mapspeedx = -1*player1.speedx 
+                        map1.mapspeedx = -1*player1.speedx 
                         player1.speedx = 0
                         #move map to right instead of moving player to left and stop the player
 
-                    elif mapx == 0:
+                    elif map1.mapx == 0:
                         #no portion of map left on the left of the screen
-
-                        player1.speedx = -1*mapspeedx
-                        mapspeedx = 0
+                        
+                        player1.speedx = -1*map1.mapspeedx
+                        map1.mapspeedx = 0
                         #set player speed to reverse of map speed and stop map from moving
 
             if player1.speedy > 0:
                 #player moving downwards
 
-                if player1.y <= redy2 :
+                if player1.y < map1.redy2 :
                     #player is inside red box
-                    mapspeedy = 0
+                    map1.mapspeedy = 0
                 else:
                     #player is outside red box
 
-                    if (-1*mapy) + display_height < map_edge_y:
+                    if (-1*map1.mapy) + display_height < map1.map_edge_y:
                         #some portion of map is hidden below the screen
                     
-                        mapspeedy = -1*player1.speedy 
+                        map1.mapspeedy = -1*player1.speedy 
                         player1.speedy = 0
                         #move map upwards instead of moving player downwards and stop the player
 
-                    elif (-1*mapy) + display_height == map_edge_y:
+                    elif (-1*map1.mapy) + display_height == map1.map_edge_y:
                         #no portion of map left below the screen
 
-                        player1.speedy = -1*mapspeedy
-                        mapspeedy = 0
+                        player1.speedy = -1*map1.mapspeedy
+                        map1.mapspeedy = 0
                         #set player speed to reverse of map speed and stop map from moving
 
             if player1.speedy < 0:
                 #player moving upwards
 
-                if player1.y >= redy1 :
+                if player1.y > map1.redy1 :
                     #player is inside red box
-                    mapspeedy = 0
+                    map1.mapspeedy = 0
                 else:
                     #player is outside red box
 
-                    if mapy < 0:
+                    if map1.mapy < 0:
                         #some portion of map is hidden above the screen
                     
-                        mapspeedy = -1*player1.speedy 
+                        map1.mapspeedy = -1*player1.speedy 
                         player1.speedy = 0
                         #move map downward instead of moving player upward and stop the player
 
-                    elif mapy == 0:
+                    elif map1.mapy == 0:
                         #no portion of map left above the screen
 
-                        player1.speedy = -1*mapspeedy
-                        mapspeedy = 0
+                        player1.speedy = -1*map1.mapspeedy
+                        map1.mapspeedy = 0
                         #set player speed to reverse of map speed and stop map from moving
 
 
@@ -217,74 +211,60 @@ def gameloop():
             if player1.speedx != 0:
                 #player moving in x axis
 
-                if player1.x <= redx2 or player1.x >= redx1:
+                if player1.x <= map1.redx2 or player1.x >= map1.redx1:
                     #player is inside red box
                     player1.speedx *= -0.1 
-                    mapspeedx = 0
+                    map1.mapspeedx = 0
                 else:
                     #player is on red box
 
-                    if ((-1*mapx) + display_width < map_edge_x) or (mapx <0):
+                    if ((-1*map1.mapx) + display_width < map1.map_edge_x) or (map1.mapx <0):
                         #map is not scrolled all the way
                     
-                        mapspeedx *= -0.1 
+                        map1.mapspeedx *= -0.1 
                         player1.speedx = 0
                         
-                    elif ((-1*mapx) + display_width == map_edge_x) or (mapx == 0):
+                    elif ((-1*map1.mapx) + display_width == map1.map_edge_x) or (map1.mapx == 0):
                         #either of map edge is touching screen edge
 
                         player1.speedx *= -0.1
-                        mapspeedx = 0
+                        map1.mapspeedx = 0
 
             if player1.speedy != 0:
                 #player moving in y axis
 
-                if player1.y <= redy2 or player1.y >= redy1 :
+                if player1.y <= map1.redy2 or player1.y >= map1.redy1 :
                     #player is inside red box
                     player1.speedy *= -0.1
-                    mapspeedy = 0
+                    map1.mapspeedy = 0
                 else:
                     #player is outside red box
 
-                    if ((-1*mapy) + display_height < map_edge_y) or (mapy < 0):
+                    if ((-1*map1.mapy) + display_height < map1.map_edge_y) or (map1.mapy < 0):
                         #map is not scrolled all the way
                     
-                        mapspeedy *= -0.1 
+                        map1.mapspeedy *= -0.1 
                         player1.speedy = 0
                         
-                    elif ((-1*mapy) + display_height == map_edge_y) or (mapy == 0):
+                    elif ((-1*map1.mapy) + display_height == map1.map_edge_y) or (map1.mapy == 0):
                         #either of map edges is touching screen edge
 
                         player1.speedy *= -0.1
-                        mapspeedy = 0
+                        map1.mapspeedy = 0
                                                
             player1.inertia()
-            inertia_map()
+            map1.inertia()
             player1.speedx = 0
             player1.speedy = 0
-            mapspeedx = 0
-            mapspeedy = 0
+            map1.mapspeedx = 0
+            map1.mapspeedy = 0
 
         player1.inertia()
-        inertia_map()
-
-
-
-        '''
-        if is_collided == False:
-            player1.inertia()
-        else:
-            player1.speedx *= -0.1 
-            player1.speedy *= -0.1
-            player1.inertia()
-            player1.speedx = 0
-            player1.speedy = 0
-        ''' 
-    
+        map1.inertia()
 
 	    #map draw-----------------------------------------------------------------------------------------------------
         gameDisplay.fill(white)
-        draw_map(mapx,mapy)
+        draw_map(map1.mapx,map1.mapy)
         pygame.display.update()
         clock.tick(60)
 
@@ -322,86 +302,47 @@ def collide(plyr,obj,mapx,mapy):
         return False
 
 def load_map(name):
-    #temporary values
-    #these values will be loaded from a text file later
+    path = 'maps/' + name + '.txt'
+    filein = open(path,'r')
 
-    wx = 200
-    wy = 200
-    a = 0
-    for i in range(1,61):
-        wl = wall()
-        wl.x = wx + a
-        wl.y = wy
-        a += wl.w
-        objects.append(wl)
+    line = filein.readline()
+    a = line.split()
+    player1.x = float(a[0])
+    player1.y = float(a[1])
+    map1.map_edge_x = int(a[2])
+    map1.map_edge_y = int(a[3])
+    l = int(a[4])
 
-    wx = 100
-    wy = 1200
-    a = 0
-    for i in range(1,61):
-        wl = wall()
-        wl.x = wx + a
-        wl.y = wy
-        a += wl.w
-        objects.append(wl)
+    w = 0.0
+    h = 0.0
 
-    wx = 150
-    wy = 300
-    a = 0
-    for i in range(1,61):
-        wl = wall()
-        wl.x = wx 
-        wl.y = wy + a
-        a += wl.h
-        objects.append(wl)
+    for i in range(1,l+1):
 
-    wx = 1250
-    wy = 300
-    a = 0
-    for i in range(1,61):
-        wl = wall()
-        wl.x = wx 
-        wl.y = wy + a
-        a += wl.h
-        objects.append(wl)
-    door1 = door()
-    door1.x = 110
-    door1.y = 240
-    objects.append(door1)
-    door2 = door()
-    door2.x = 1200
-    door2.y = 240
-    objects.append(door2)
+        line = filein.readline()
+        #print line
+        for o in line:
 
+            if o == 'W':
+                wl = wall(w,h)
+                objects.append(wl)
+            elif o == 'D':
+                dr = door(w,h)
+                objects.append(dr)
+            
+            w += 30
+
+        h += 30
+        w = 0.0
+
+    filein.close()
+  
 def draw_map(x,y):
     for obj in objects:
         draw(obj,x,y)
     draw(player1,0,0)
     
-
-def inertia_map():
-    #same as player inertia
-    brakespeed = 0.5
-    global mapspeedx
-    global mapspeedy
-    global mapx
-    global mapy
-
-    if mapspeedx > 0:
-        mapspeedx = (mapspeedx*1000 - brakespeed*1000)/1000
-    elif mapspeedx < 0:
-        mapspeedx = (mapspeedx*1000 + brakespeed*1000)/1000
-
-    if mapspeedy > 0:
-        mapspeedy = (mapspeedy*1000 - brakespeed*1000)/1000
-    elif mapspeedy < 0:
-        mapspeedy = (mapspeedy*1000 + brakespeed*1000)/1000
-
-    mapx += mapspeedx
-    mapy += mapspeedy
-
 # main code
+gameintro()#intro loop run firstly
 gameinit()
 gameloop()
 gameexit()
-
