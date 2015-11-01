@@ -35,9 +35,13 @@ def gameintro():
                  gameexit()
              if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_s:
+                    load = 1
                     start = False
                  
          gameDisplay.fill(black)
+         if load ==1:
+              message('LOADING...',red,500,500)
+              pygame.display.update()
          message('WELCOME TO THE BEST GAME EVER',blue,300,500)
          message('PRESS s TO START THE GAME',white,400,700)
             
