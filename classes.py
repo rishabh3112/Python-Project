@@ -1,7 +1,9 @@
 import pygame
 pygame.init()
 
+#temporary values, to be changed later
 brakespeed = 0.5
+maxspeed = 5
 
 class player():
 
@@ -28,13 +30,13 @@ class player():
         #set initial speed according to direction
 
         if direction == 'up':
-            self.speedy = -5
+            self.speedy = -maxspeed
         elif direction == 'down':
-            self.speedy = 5
+            self.speedy = maxspeed
         elif direction == 'left':
-            self.speedx = -5
+            self.speedx = -maxspeed
         elif direction == 'right':
-            self.speedx = 5      
+            self.speedx = maxspeed     
 
     def inertia(self):
         #constantly reduce speed till it is zero for smooth motion
@@ -63,11 +65,13 @@ class player():
 
 class wall():
 
-    def __init__(self):
+    def __init__(self,x,y):
         #initialize all variables
 
-        self.x = 0.0
-        self.y = 0.0
+        self.name = 'wall'
+
+        self.x = x
+        self.y = y
         self.h = 30
         self.w = 30
 
@@ -75,4 +79,56 @@ class wall():
 
         self.image = pygame.image.load('images/wall.png')
         self.image = pygame.transform.scale(self.image, (self.w, self.h))
+
+
+class door():
+
+    def __init__(self,x,y):
+        #initialize all variables
+
+        self.name = 'door'
+
+        self.x = x
+        self.y = y
+        self.h = 30
+        self.w = 30
+
+        self.can_collide = True
+
+        self.image = pygame.image.load('images/door.png')
+        self.image = pygame.transform.scale(self.image, (self.w, self.h))
         
+
+class gamemap():
+
+    def __init__(self,dw,dh):
+        #initialize all variables
+
+        self.mapx = 0.1
+        self.mapy = 0.1
+        self.mapspeedx = 0
+        self.mapspeedy = 0
+
+        self.redx1 = 100
+        self.redy1 = 100
+        self.redx2 = dw - 100
+        self.redy2 = dh - 100
+
+        self.map_edge_x = 2200
+        self.map_edge_y = 2200
+
+    def inertia(self):
+        #same as player inertia
+        if self.mapspeedx > 0:
+            self.mapspeedx = (self.mapspeedx*1000 - brakespeed*1000)/1000
+        elif self.mapspeedx < 0:
+            self.mapspeedx = (self.mapspeedx*1000 + brakespeed*1000)/1000
+
+        if self.mapspeedy > 0:
+            self.mapspeedy = (self.mapspeedy*1000 - brakespeed*1000)/1000
+        elif self.mapspeedy < 0:
+            self.mapspeedy = (self.mapspeedy*1000 + brakespeed*1000)/1000
+
+        self.mapx += self.mapspeedx
+        self.mapy += self.mapspeedy
+
