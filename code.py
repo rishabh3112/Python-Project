@@ -14,6 +14,7 @@ objects = []
 black = (0,0,0)
 white = (255,255,255)
 blue=(0,0,255)
+red=(255,0,0)
 
 # main pygame variables
 gameDisplay = pygame.display.set_mode((display_width,display_height))
@@ -30,6 +31,7 @@ def message(msg,color,mesx,mesy):
     gameDisplay.blit(screen,[mesx,mesy])
 def gameintro():
     start = True
+    load=0
     while start:
          for event in pygame.event.get():
              if event.type == pygame.QUIT:
