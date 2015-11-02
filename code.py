@@ -20,9 +20,10 @@ gameDisplay = pygame.display.set_mode((display_width,display_height))
 #pygame.display.toggle_fullscreen()
 clock = pygame.time.Clock()
 font = pygame.font.SysFont(None,50)
+
 def menu():
     pass
-#
+
 def message(msg,color,mesx,mesy):
     
     screen = font.render(msg,True,color)
@@ -48,6 +49,7 @@ def gameintro():
            
          pygame.display.update()
          clock.tick(60)
+
 def gameinit():
     load_map('level1')           
 
