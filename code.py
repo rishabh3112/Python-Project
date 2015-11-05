@@ -1,14 +1,18 @@
 import pygame
+import sys
 from classes import *
 
 pygame.init()
 
 #global variables
+fps = 60
 display_width = 1366
 display_height = 768
 player1 = player()
 map1 = gamemap(display_width,display_height)
 objects = [] 
+lines = []
+mode = ''
 
 #color variables
 black = (0,0,0)
@@ -32,6 +36,7 @@ def message(msg,color,mesx,mesy):
 def gameintro():
     start = True
     load=0
+    global mode
     while start:
          for event in pygame.event.get():
              if event.type == pygame.QUIT:
@@ -40,6 +45,12 @@ def gameintro():
                 if event.key == pygame.K_s:
                     load = 1
                     start = False
+                    mode = 'play'
+                elif event.key == pygame.K_e:
+                    load = 1
+                    start = False
+                    mode = 'edit'
+                                  
                  
          gameDisplay.fill(black)
          if load ==1:
@@ -98,7 +109,7 @@ def gameloop():
             player1.move('down')
         
         
-              
+        mcoords = pygame.mouse.get_pos()      
 
 
         #logic------------------------------------------------------------------------------------------------------
@@ -270,11 +281,60 @@ def gameloop():
         player1.inertia()
         map1.inertia()
 
-	    #map draw-----------------------------------------------------------------------------------------------------
+
         gameDisplay.fill(white)
         draw_map(map1.mapx,map1.mapy)
+        
+
+        #logic for line intersection
+        #not optimised yet
+
+
+        #for l in lines:
+        l = lines[4]
+        ax1 = player1.x + (player1.w/2)
+        ay1 = player1.y + (player1.h/2)
+        ax2 = mcoords[0]
+        ay2 = mcoords[1]
+        if ax2-ax1 != 0:
+            m1 = (ay2-ay1) / (ax2-ax1)
+        else:
+            m1 = 0
+
+        bx1 = l.x1
+        bx2 = l.x2
+        by1 = l.y1
+        by2 = l.y2
+        m2 = l.slope
+
+        if m1-m2 !=0:
+
+            xi = ((m1*ax1) - (m2*bx1) - ay1 + by1) / (m1 - m2)
+            yi = (m2*xi) - (m2*bx1) + by1
+
+        
+
+        p1 = point(ax1,ay1)
+        p2 = point(ax2,ay2)
+        p3 = point(bx1,by1)
+        p4 = point(bx2,by2)
+
+        p = point(xi,yi)
+
+
+        print sys.float_info.epsilon,isBetween(p1,p2,p)
+        if isBetween(p1,p2,p) == True and isBetween(p3,p4,p) == True:
+            ax2 = xi
+            ay2 = yi
+
+
+        pygame.draw.line(gameDisplay,red,(ax1,ay1),(ax2,ay2),2)
+        pygame.draw.line(gameDisplay,blue,(bx1,by1),(bx2,by2),2)
+        pygame.draw.circle(gameDisplay,red,(int(xi),int(yi)),3,0)
+	    #map draw-----------------------------------------------------------------------------------------------------
+        
         pygame.display.update()
-        clock.tick(60)
+        clock.tick(fps)
 
 
 
@@ -311,46 +371,252 @@ def collide(plyr,obj,mapx,mapy):
 
 def load_map(name):
     path = 'maps/' + name + '.txt'
-    filein = open(path,'r')
+    f = open(path,'r')
 
-    line = filein.readline()
-    a = line.split()
-    player1.x = float(a[0])
-    player1.y = float(a[1])
-    map1.map_edge_x = int(a[2])
-    map1.map_edge_y = int(a[3])
-    l = int(a[4])
+    for l in f:
+        a = l.split()
 
-    w = 0.0
-    h = 0.0
+        if int(a[0]) == 0:
+            #id of first line
+            player1.x = float(a[1])
+            player1.y = float(a[2])
+            map1.map_edge_x = int(a[3])
+            map1.map_edge_y = int(a[4])
 
-    for i in range(1,l+1):
+        if int(a[0]) == 1:
+            #id of wall
+            wx = float(a[1])
+            wy = float(a[2])
+            wl = wall(wx,wy)
+            objects.append(wl)
 
-        line = filein.readline()
-        #print line
-        for o in line:
+        if int(a[0]) == 2:
+            #id of line
+            lx1 = float(a[1])
+            ly1 = float(a[2])
+            lx2 = float(a[3])
+            ly2 = float(a[4])
+            if lx2-lx1 != 0:
 
-            if o == 'W':
-                wl = wall(w,h)
-                objects.append(wl)
-            elif o == 'D':
-                dr = door(w,h)
-                objects.append(dr)
-            
-            w += 30
+                lm = (ly2-ly1)/(lx2-lx1)
+            else:
+                lm = 0
+            ln = line(lx1,ly1,lx2,ly2)
+            ln.slope = lm
+            lines.append(ln)
 
-        h += 30
-        w = 0.0
-
-    filein.close()
+        if int(a[0]) == 3:
+            #id of door
+            dx = float(a[1])
+            dy = float(a[2])
+            dr = door(wx,wy)
+            objects.append(dr)
   
 def draw_map(x,y):
     for obj in objects:
         draw(obj,x,y)
     draw(player1,0,0)
+
+
+
+def isBetween(a, b, c):
+    #copied from
+    # http://stackoverflow.com/questions/328107/how-can-you-determine-a-point-is-between-two-other-points-on-a-line-segment#
+    crossproduct = (c.y - a.y) * (b.x - a.x) - (c.x - a.x) * (b.y - a.y)
+    if abs(crossproduct) > 0.00001 : return False   # (or != 0 if using integers) ........ sys.float_info.epsilon
+
+    dotproduct = (c.x - a.x) * (b.x - a.x) + (c.y - a.y)*(b.y - a.y)
+    if dotproduct < 0 : return False
+
+    squaredlengthba = (b.x - a.x)*(b.x - a.x) + (b.y - a.y)*(b.y - a.y)
+    if dotproduct > squaredlengthba: return False
+
+    return True
+
+
+
+
+
+#--------------------------------level editor loop -------------------------------------------------
+def editloop():
+
+    objs = []
+    wall1 = wall(0,0)
+    line1 = line(0,0,0,0)
+    plyrx = -100
+    plyry = -100
+    gridmode = False
+    selected_object = 'none'
+    linepoint1 = False
+    mousepress = False
+    quit = False
+    while quit == False:
+
+        #events---------------------------------------------------------------------------------------------------
+        for event in pygame.event.get():
+        
+            # event - quit
+            if event.type == pygame.QUIT:
+                quit = True
+            if event.type == pygame.KEYDOWN:
+                #close game if backspace is pressed
+                #(made this shortcut as game cannot be closed in full screen)
+                if event.key == pygame.K_BACKSPACE:
+                    quit = True
+                #toggles fulscreen mode when pressing esc
+                if event.key == pygame.K_ESCAPE:
+                    pygame.display.toggle_fullscreen()
+
+                if event.key == pygame.K_g:
+                    if gridmode == False:
+                        gridmode = True
+                    else:
+                        gridmode = False
+
+
+                if event.key == pygame.K_w:
+                    selected_object = 'wall'
+                if event.key == pygame.K_l:
+                    selected_object = 'line'
+                if event.key == pygame.K_p:
+                    selected_object = 'player'
+                if event.key == pygame.K_SPACE:
+                    selected_object = 'eraser'
+
+
+
+                if event.key == pygame.K_s:
+                    l1 = '0 ' + str(plyrx) + ' ' + str(plyry) +' 2200 2200\n'
+                    f = open('maps/level1.txt','w+')
+                    f.seek(0,0)
+                    f.write(l1)
+
+                    for o in objs:
+                        if o.name == 'wall':
+                            l = str(o.id) + ' ' + str(o.x) + ' ' + str(o.y) + '\n'
+                        elif o.name == 'line':
+                            l = str(o.id) + ' ' + str(o.x1) + ' ' + str(o.y1) + ' ' + str(o.x2) + ' ' + str(o.y2) + '\n'
+                        f.write(l)
+
+                    f.close()
+
+                    
+            if event.type == pygame.MOUSEBUTTONUP:
+                mousepress = True
     
+        gameDisplay.fill(white)
+
+        for o in objs:
+            if o.name == 'wall':
+                gameDisplay.blit(o.image,(o.x,o.y))
+            elif o.name == 'line':
+                pygame.draw.line(gameDisplay,blue,(o.x1,o.y1),(o.x2,o.y2),1)
+
+        mcoords = pygame.mouse.get_pos()
+        
+        if selected_object == 'wall':
+
+            if gridmode == False:
+                wall1.x = mcoords[0] - (wall1.w/2)
+                wall1.y = mcoords[1] - (wall1.h/2)
+            elif gridmode == True:
+                mx = mcoords[0]
+                while mx % 30 != 0:
+                    mx -= 1
+                my = mcoords[1]
+                while my % 30 != 0:
+                    my -= 1
+                wall1.x = mx
+                wall1.y = my
+
+            if mousepress == True:
+                wl = wall(wall1.x,wall1.y)
+                objs.append(wl)
+                
+
+            gameDisplay.blit(wall1.image,(wall1.x,wall1.y))
+            
+
+        if selected_object == 'line':
+            if linepoint1 == False:
+                if gridmode == False:
+                    line1.x1 = mcoords[0]
+                    line1.y1 = mcoords[1]
+                elif gridmode == True:
+                    mx = mcoords[0]
+                    while mx % 30 != 0:
+                        mx -= 1
+                    my = mcoords[1]
+                    while my % 30 != 0:
+                        my -= 1
+                    line1.x1 = mx
+                    line1.y1 = my   
+                if mousepress == True:
+                    linepoint1 = True
+
+
+                pygame.draw.circle(gameDisplay,red,(line1.x1,line1.y1),3,0)
+
+            else:
+                if gridmode == False:
+                    line1.x2 = mcoords[0]
+                    line1.y2 = mcoords[1]
+                elif gridmode == True:
+                    mx = mcoords[0]
+                    while mx % 30 != 0:
+                        mx -= 1
+                    my = mcoords[1]
+                    while my % 30 != 0:
+                        my -= 1
+                    line1.x2 = mx
+                    line1.y2 = my
+
+                pygame.draw.circle(gameDisplay,red,(line1.x1,line1.y1),3,0)
+                pygame.draw.circle(gameDisplay,red,(line1.x2,line1.y2),3,0)
+                pygame.draw.line(gameDisplay,blue,(line1.x1,line1.y1),(line1.x2,line1.y2),1)   
+                
+                if mousepress == True:
+                    linepoint1 = False
+                    ln = line(line1.x1,line1.y1,line1.x2,line1.y2)
+                    objs.append(ln)
+
+        if selected_object == 'player':
+            pygame.draw.circle(gameDisplay,red,mcoords,3,0)
+            if mousepress == True:
+                plyrx = mcoords[0]
+                plyry = mcoords[1]
+
+        mousepress = False
+        
+        if gridmode == True:
+            for x in range(0,1300,30):
+                pygame.draw.line(gameDisplay,black,(x,0),(x,1000),1)
+            for y in range(0,700,30):
+                pygame.draw.line(gameDisplay,black,(0,y),(1390,y),1)        
+
+        pygame.draw.circle(gameDisplay,red,(plyrx,plyry),3,0)
+
+        
+        pygame.display.update()
+        clock.tick(fps)
+
+
+
+
+
+
+
+
+
+
+        
 # main code
-gameintro()#intro loop run firstly
-gameinit()
-gameloop()
+gameintro()
+if mode == 'play':
+    gameinit()
+    gameloop()
+elif mode == 'edit':
+    editloop()
 gameexit()
+
+
