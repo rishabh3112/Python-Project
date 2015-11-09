@@ -158,3 +158,44 @@ class point():
 
         self.x = x
         self.y = y
+class bull:
+    def __init__(self,x,y):
+        self.x = x
+        self.y = y
+        self.h = 30
+        self.w = 30
+        self.name = 'bull'
+        self.can_collide = True
+        self.image = pygame.image.load('images/bull.png')
+        self.image = pygame.transform.scale(self.image, (self.w, self.h))
+class car:
+    def __init__(self,x,y):
+        self.x = x
+        self.y = y
+        self.h = 70
+        self.w = 50
+        self.name = "car"
+        self.can_collide = True
+        self.image = pygame.image.load('images/car.png')
+        self.image = pygame.transform.scale(self.image, (self.w, self.h))
+class road:
+    def __init__(self,x,y):
+        self.x = x
+        self.y = y
+        self.h = 30
+        self.w = 30
+        
+        self.name="road1"
+        self.can_collide = True
+        self.image = pygame.image.load('images/road.png')
+        self.image = pygame.transform.scale(self.image, (self.w, self.h))
+class shop:
+    def __init__(self,x,y):
+        self.x = x
+        self.y = y
+        self.h = 30
+        self.w = 30
+        self.name = "shop1"
+        self.can_collide = True
+        self.image = pygame.image.load('images/shop.png')
+        self.image = pygame.transform.scale(self.image, (self.w, self.h))
