@@ -75,6 +75,8 @@ class line():
         self.y1 = y1
         self.y2 = y2
         self.slope = 0.0
+        self.length = 0.0
+        self.is_vertical = False
         self.width = 1
         self.color = (0,0,0)
 
