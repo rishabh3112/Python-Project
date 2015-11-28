@@ -110,7 +110,7 @@ class door():
         self.x = x
         self.y = y
         self.h = 30
-        self.w = 25
+        self.w = 30
 
         self.can_collide = True
 
